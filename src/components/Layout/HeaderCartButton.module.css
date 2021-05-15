@@ -1,11 +1,11 @@
 .button {
-  width: 300px;
   cursor: pointer;
   font: inherit;
   border: none;
   background-color: #4d1601;
   color: white;
   padding: 0.75rem 3rem;
+  /* without flex, all height/width attributes don't work. Why? */
   display: flex;
   justify-content: space-around;
   align-items: center;
