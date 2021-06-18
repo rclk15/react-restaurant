@@ -44,6 +44,7 @@ const Cart = (props) => {
         <button className={classes["button--alt"]} onClick={props.onHideCart}>
           Close
         </button>
+        {/* if totalAmount is 0, !! turns it to boolean false. */}
         {!!cartCtx.totalAmount && <button className={classes.button}>Order</button>}
       </div>
     </Modal>
