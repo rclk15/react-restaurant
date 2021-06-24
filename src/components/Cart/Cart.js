@@ -1,10 +1,14 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CartContext from "../../store/cart-context";
 import Modal from "../UI/Modal";
 import classes from "./Cart.module.css";
 import CartItem from "./CartItem";
+import Checkout from "./Checkout";
 
 const Cart = (props) => {
+
+  const [isCheckout, setIsCheckOut] = useState(false);
+
   const cartCtx = useContext(CartContext);
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
@@ -18,6 +22,15 @@ const Cart = (props) => {
       quantity: 1,
     });
   };
+
+  // only have to prevent default on submit buttons!
+  const checkoutHandler = () => {
+    setIsCheckOut(true);
+  }
+
+  const checkoutCancel = () => {
+    setIsCheckOut(false);
+  }
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
@@ -33,6 +46,18 @@ const Cart = (props) => {
     </ul>
   );
 
+  const modalActions = (
+    <div className={classes.actions}>
+      <button className={classes["button--alt"]} onClick={props.onHideCart}>
+        Close
+      </button>
+      {/* if totalAmount is 0, !! turns it to boolean false. */}
+      {!!cartCtx.totalAmount && (
+        <button className={classes.button} onClick={checkoutHandler}>Order</button>
+      )}
+    </div>
+  );
+
   return (
     <Modal onHideCart={props.onHideCart}>
       {cartItems}
@@ -40,13 +65,8 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      <div className={classes.actions}>
-        <button className={classes["button--alt"]} onClick={props.onHideCart}>
-          Close
-        </button>
-        {/* if totalAmount is 0, !! turns it to boolean false. */}
-        {!!cartCtx.totalAmount && <button className={classes.button}>Order</button>}
-      </div>
+      {isCheckout && <Checkout onCancel={checkoutCancel} /> }
+      {!isCheckout && modalActions}
     </Modal>
   );
 };

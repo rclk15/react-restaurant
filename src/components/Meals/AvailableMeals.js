@@ -43,7 +43,7 @@ const AvailableMeals = (props) => {
 
     const getMeals = async () => {
       const response = await fetch(
-        "https://react-custom-73305-default-rtdb.firebaseio.com/meals"
+        "https://react-custom-73305-default-rtdb.firebaseio.com/meals.json"
       );
       if (!response.ok) {
         console.log(response);
@@ -64,14 +64,12 @@ const AvailableMeals = (props) => {
           price: dataJson[key].price,
         });
       }
-      console.log(1);
       setMeals(loadedMeals);
-      console.log(2);
       setIsLoading(false);
     };
     // try {
-    //   // since getMeals is async, but we can't await here b/c useEffect cannot
-    //   // take async function. have to use .catch instead of just catch for the
+      //   // since getMeals is async, but we can't await here b/c useEffect cannot
+      //   // take async function. have to use .catch instead of just catch for the
     //   // error thrown in getMeals. A rejected promise will be returned.
     //   getMeals();
     // } catch {
@@ -79,9 +77,7 @@ const AvailableMeals = (props) => {
     //   setError(error.message); // this message is what we set above!
     // }
     getMeals().catch((error) => {
-      console.log(3);
       setIsLoading(false);
-      console.log(4);
       setError(error.message);
     });
   }, []);
