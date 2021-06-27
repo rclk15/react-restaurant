@@ -52,6 +52,11 @@ const Checkout = (props) => {
       inputTenNumbers(enteredPhone)
     ) {
       console.log("valid");
+      props.onConfirmCheckout({
+        name: enteredName,
+        address: enteredAddress,
+        phone: enteredPhone,
+      })
     } else {
       console.log("not valid");
     }

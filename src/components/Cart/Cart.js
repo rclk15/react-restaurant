@@ -6,7 +6,6 @@ import CartItem from "./CartItem";
 import Checkout from "./Checkout";
 
 const Cart = (props) => {
-
   const [isCheckout, setIsCheckOut] = useState(false);
 
   const cartCtx = useContext(CartContext);
@@ -26,11 +25,21 @@ const Cart = (props) => {
   // only have to prevent default on submit buttons!
   const checkoutHandler = () => {
     setIsCheckOut(true);
-  }
+  };
 
   const checkoutCancel = () => {
     setIsCheckOut(false);
-  }
+  };
+
+  const confirmCheckoutHandler = async (userData) => {
+    await fetch("https://react-custom-73305-default-rtdb.firebaseio.com/orders.json",{
+      method: 'POST',
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items
+      }),
+    })
+  };
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
@@ -53,7 +62,9 @@ const Cart = (props) => {
       </button>
       {/* if totalAmount is 0, !! turns it to boolean false. */}
       {!!cartCtx.totalAmount && (
-        <button className={classes.button} onClick={checkoutHandler}>Order</button>
+        <button className={classes.button} onClick={checkoutHandler}>
+          Order
+        </button>
       )}
     </div>
   );
@@ -65,7 +76,12 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckout && <Checkout onCancel={checkoutCancel} /> }
+      {isCheckout && (
+        <Checkout
+          onCancel={checkoutCancel}
+          onConfirmCheckout={confirmCheckoutHandler}
+        />
+      )}
       {!isCheckout && modalActions}
     </Modal>
   );

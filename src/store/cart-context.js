@@ -5,10 +5,10 @@ import React from "react";
 const CartContext = React.createContext({
   // place-holders 
     // are these optional?
-  // items: [],
-  // totalAmount: 0,
-  // addItem: (item) => {},
-  // removeItem: (id) => {},
+  items: [],
+  totalAmount: 0,
+  addItem: (item) => {},
+  removeItem: (id) => {},
 });
 
 export default CartContext;
