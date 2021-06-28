@@ -48,9 +48,11 @@ const cartReducer = (state, action) => {
     let updatedItems; // this creates a new array that will replace existing array (so we 'concat').
     if (existingItem.quantity === 1) {
       updatedItems = state.items.filter((item) => item.id !== action.id);
-    }
-    else {
-      const updatedItem = {...existingItem, quantity: existingItem.quantity - 1};
+    } else {
+      const updatedItem = {
+        ...existingItem,
+        quantity: existingItem.quantity - 1,
+      };
       updatedItems = [...state.items];
       updatedItems[existingItemIndex] = updatedItem;
     }
@@ -59,22 +61,32 @@ const cartReducer = (state, action) => {
       totalAmount: updatedTotalAmount,
     };
   }
+
+  if (action.type === "RESET") {
+    return defaultCartState;
+  }
   return defaultCartState;
 };
 
+// CartProvider (specifically cartContext, and the functions in cartContext) is user-facing. Functions in cartContext calls cartActionDispatch, which calls cartReducer to update cartState.
 const CartProvider = (props) => {
   const [cartState, cartActionDispatch] = useReducer(
     cartReducer,
     defaultCartState
   );
 
+  console.log("reducer again");
   const addItemHandler = (item) => {
-    // console.log(item);
+    console.log("again");
     cartActionDispatch({ type: "ADD", item: item });
   };
 
   const removeItemHandler = (id) => {
     cartActionDispatch({ type: "REMOVE", id: id });
+  };
+
+  const resetCartHandler = () => {
+    cartActionDispatch({ type: "RESET" });
   };
 
   // this is the object that will be shared with other component,
@@ -84,6 +96,7 @@ const CartProvider = (props) => {
     totalAmount: cartState.totalAmount,
     addItem: addItemHandler,
     removeItem: removeItemHandler,
+    resetCart: resetCartHandler,
   };
 
   // value is what will be provided by the context, in this case cartContext.
@@ -94,4 +107,4 @@ const CartProvider = (props) => {
   );
 };
 
-export default CartProvider;
+export default React.memo(CartProvider);

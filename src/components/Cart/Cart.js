@@ -7,6 +7,8 @@ import Checkout from "./Checkout";
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckOut] = useState(false);
+  const [justCheckedOut, setJustCheckedOut] = useState(false);
+  console.log("justCheckedOut ", justCheckedOut);
 
   const cartCtx = useContext(CartContext);
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
@@ -32,13 +34,19 @@ const Cart = (props) => {
   };
 
   const confirmCheckoutHandler = async (userData) => {
-    await fetch("https://react-custom-73305-default-rtdb.firebaseio.com/orders.json",{
-      method: 'POST',
-      body: JSON.stringify({
-        user: userData,
-        orderedItems: cartCtx.items
-      }),
-    })
+    await fetch(
+      "https://react-custom-73305-default-rtdb.firebaseio.com/orders.json",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          user: userData,
+          orderedItems: cartCtx.items,
+        }),
+      }
+    );
+    setIsCheckOut(false);
+    setJustCheckedOut(true);
+    cartCtx.resetCart();
   };
 
   const cartItems = (
@@ -71,11 +79,15 @@ const Cart = (props) => {
 
   return (
     <Modal onHideCart={props.onHideCart}>
+      {justCheckedOut && <p>Checkout successful!</p>}
       {cartItems}
-      <div className={classes.total}>
-        <span>Total Amount</span>
-        <span>{totalAmount}</span>
-      </div>
+      {!justCheckedOut && (
+        <div className={classes.total}>
+          <span>Total Amount</span>
+          <span>{totalAmount}</span>
+        </div>
+      )}
+      {/* this shows the extra Checkout (form) */}
       {isCheckout && (
         <Checkout
           onCancel={checkoutCancel}
